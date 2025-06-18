@@ -1,10 +1,10 @@
 import requests
+import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-
-TELEGRAM_TOKEN = '7409978697:AAFXd3o0wRqhoNVUKidBY7Svd0pbPJaUwtU'   # Example: '123456:ABCDEF...' (after reset)
-WEATHER_API_KEY = 'e9ba5512c3f392fbe27f67b2bf35e460'  # Example: 'e9ba5512c3f392fbe27f67b2bf35e460'
+TELEGRAM_TOKEN = os.getenv("BOT_TOKEN")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -28,12 +28,10 @@ async def weather(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     data = response.json()
 
-    # Current weather
     current = data['list'][0]
     desc = current['weather'][0]['description'].title()
     temp = current['main']['temp']
 
-    # 3-day forecast (grab forecast at 12:00 PM)
     forecast = []
     for item in data['list']:
         if '12:00:00' in item['dt_txt']:
@@ -49,13 +47,10 @@ async def weather(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(msg, parse_mode="Markdown")
 
-# Main bot setup
 def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("weather", weather))
-
     print("✅ Bot is running...")
     app.run_polling()
 
