@@ -51,7 +51,7 @@ def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("weather", weather))
-    print("✅ Bot is running...")
+    print("Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
